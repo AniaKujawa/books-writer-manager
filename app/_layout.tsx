@@ -7,27 +7,6 @@ export default function Layout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
-          name="project/new"
-          options={{
-            title: "New Project",
-            headerBackTitle: "Back",
-          }}
-        />
-        <Stack.Screen
-          name="project/[id]"
-          options={{
-            title: "Project Details",
-            headerBackTitle: "Back",
-          }}
-        />
-        <Stack.Screen
-          name="projects"
-          options={{
-            title: "All Projects",
-            headerBackTitle: "Back",
-          }}
-        />
-        <Stack.Screen
           name="index"
           options={{
             title: "Current Project",
@@ -35,7 +14,35 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
-          name="character/[id]"
+          name="(tabs)/project/new"
+          options={{
+            title: "New Project",
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)/project/[id]/index"
+          options={{
+            title: "Project Details",
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)/projects"
+          options={{
+            title: "All Projects",
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)/project/[id]/character/new"
+          options={{
+            title: "New Character",
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)/project/[id]/character/[idc]/index"
           options={{
             title: "Character Details",
             headerBackTitle: "Back",

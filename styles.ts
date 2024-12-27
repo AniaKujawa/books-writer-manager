@@ -11,6 +11,11 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
+  description: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 16,
+  },
   section: {
     marginBottom: 20,
   },
@@ -33,6 +38,10 @@ export const styles = StyleSheet.create({
   characterName: {
     fontSize: 16,
     textAlign: 'center',
+    color: '#6200ee',
+  },
+  characterButton: {
+    marginBottom: 8,
   },
   timeline: {
     height: 100,

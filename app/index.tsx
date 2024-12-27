@@ -2,7 +2,7 @@ import { Link, router } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, FAB, Portal, Provider } from "react-native-paper";
+import { Button, FAB, IconButton, Portal, Provider } from "react-native-paper";
 import { styles } from "../styles";
 
 interface Character {
@@ -67,7 +67,26 @@ export default function HomeScreen() {
   return (
     <Provider>
       <View style={styles.container}>
-        <Text style={styles.title}>{currentProject.title}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            // marginBottom: 16,
+          }}
+        >
+          <Text style={styles.title}>{currentProject.title}</Text>
+          <IconButton
+            icon="pencil"
+            size={28}
+            onPress={() =>
+              router.push({
+                pathname: "/project/[id]",
+                params: { id: currentProject.id },
+              })
+            }
+          />
+        </View>
 
         {/* Characters Section */}
         <View style={styles.section}>
