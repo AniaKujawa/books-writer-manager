@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../../../styles";
 import { Project } from "../../../../types";
 import { StyledTextInput } from "../../../../components/TextInput";
+import { Timeline } from "../../../../components/Timeline";
+import { DraggableEventCard } from "../../../../components/DraggableEvent";
 
 export default function ProjectScreen() {
   const { id } = useLocalSearchParams();
@@ -145,30 +147,13 @@ export default function ProjectScreen() {
 
         {/* Timeline Section */}
         <Card style={styles.section}>
-          <Card.Title
-            title="Timeline"
-            right={(props) => (
-              <IconButton
-                {...props}
-                icon="plus"
-                onPress={() => {
-                  /* Add timeline event */
-                }}
-              />
-            )}
-          />
           <Card.Content>
-            {projectData.timeline.map((event) => (
-              <Card key={event.id} style={{ marginBottom: 8 }}>
-                <Card.Title
-                  title={event.title}
-                  subtitle={`Chapter ${event.chapter}`}
-                />
-                <Card.Content>
-                  <Text>{event.description}</Text>
-                </Card.Content>
-              </Card>
-            ))}
+            <Timeline
+              events={projectData.timeline}
+              EventCard={DraggableEventCard}
+              onAddEvent={() => {}}
+              onUpdateEvent={() => {}}
+            />
           </Card.Content>
         </Card>
       </ScrollView>
