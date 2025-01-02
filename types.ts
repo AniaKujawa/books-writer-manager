@@ -18,5 +18,5 @@ export interface TimelineEvent {
   title: string;
   description: string;
   chapter: number;
-  position: number;
+  order: number;
 }

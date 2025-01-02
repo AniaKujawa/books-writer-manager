@@ -1,5 +1,5 @@
 import { PanGestureHandler } from "react-native-gesture-handler";
-import { Text } from "react-native";
+import { Text, View, Pressable } from "react-native";
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -7,27 +7,32 @@ import Animated, {
   withSpring,
   runOnJS,
 } from "react-native-reanimated";
-import { Card } from "react-native-paper";
+import { Card, IconButton } from "react-native-paper";
 import { TimelineEvent } from "../../types";
+import { styles } from "./DraggableEventCard.styles";
 
 interface DraggableEventCardProps {
   event: TimelineEvent;
   onMove: (newChapter: number) => void;
-  onUpdateEvent: (event: TimelineEvent) => void;
+  onRemove: (event: TimelineEvent) => void;
+  onLongPress?: () => void;
+  isActive?: boolean;
 }
 
 export const DraggableEventCard = ({
   event,
   onMove,
-  ...props
+  onRemove,
+  onLongPress,
+  isActive,
 }: DraggableEventCardProps) => {
   const translateY = useSharedValue(0);
 
   const gestureHandler = useAnimatedGestureHandler({
-    onStart: (_, ctx) => {
+    onStart: (_, ctx: any) => {
       ctx.startY = translateY.value;
     },
-    onActive: (event, ctx) => {
+    onActive: (event, ctx: any) => {
       translateY.value = ctx.startY + event.translationY;
     },
     onEnd: () => {
@@ -36,7 +41,9 @@ export const DraggableEventCard = ({
         1,
         Math.ceil(Math.abs(translateY.value) / 100)
       );
-      runOnJS(onMove)(event.id, newChapter);
+      if (newChapter !== event.chapter) {
+        runOnJS(onMove)(newChapter);
+      }
       translateY.value = withSpring(0);
     },
   });
@@ -46,21 +53,33 @@ export const DraggableEventCard = ({
   }));
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
-      <Animated.View style={animatedStyle}>
-        <Card {...props}>
-          <Card.Content>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-              {event.title}
-            </Text>
-            <Text style={{ fontSize: 12 }}>
-              {event.description.length > 50
-                ? event.description.slice(0, 50) + "..."
-                : event.description}
-            </Text>
-          </Card.Content>
-        </Card>
-      </Animated.View>
-    </PanGestureHandler>
+    <Pressable
+      onLongPress={onLongPress}
+      style={[styles.cardContainer, isActive && styles.activeCard]}
+    >
+      <PanGestureHandler onGestureEvent={gestureHandler}>
+        <Animated.View style={[styles.cardContent, animatedStyle]}>
+          <Card>
+            <Card.Content>
+              <View style={styles.contentContainer}>
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>{event.title}</Text>
+                  <Text style={styles.description}>
+                    {event.description.length > 50
+                      ? event.description.slice(0, 50) + "..."
+                      : event.description}
+                  </Text>
+                </View>
+                <IconButton
+                  icon="delete"
+                  size={20}
+                  onPress={() => onRemove(event)}
+                />
+              </View>
+            </Card.Content>
+          </Card>
+        </Animated.View>
+      </PanGestureHandler>
+    </Pressable>
   );
 };

@@ -1,5 +1,5 @@
 import { useLocalSearchParams, router } from "expo-router";
-import { View, ScrollView } from "react-native";
+import { View, Alert } from "react-native";
 import { Text, FAB, Card, IconButton } from "react-native-paper";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +8,7 @@ import { Project } from "../../../../types";
 import { StyledTextInput } from "../../../../components/TextInput";
 import { Timeline } from "../../../../components/Timeline";
 import { DraggableEventCard } from "../../../../components/DraggableEvent";
+import { NestableScrollContainer } from "react-native-draggable-flatlist";
 
 export default function ProjectScreen() {
   const { id } = useLocalSearchParams();
@@ -41,13 +42,13 @@ export default function ProjectScreen() {
     );
   }
 
-  const saveProject = async () => {
+  const saveProject = async (dataToSave = projectData) => {
     try {
       const savedProjects = await AsyncStorage.getItem("projects");
       if (savedProjects) {
         const projects = JSON.parse(savedProjects);
         const updatedProjects = projects.map((p: Project) =>
-          p.id === projectData?.id ? projectData : p
+          p.id === dataToSave?.id ? dataToSave : p
         );
         await AsyncStorage.setItem("projects", JSON.stringify(updatedProjects));
       }
@@ -59,7 +60,7 @@ export default function ProjectScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <NestableScrollContainer>
         {/* Project Title Section */}
         <Card style={styles.section}>
           <Card.Title
@@ -151,17 +152,64 @@ export default function ProjectScreen() {
             <Timeline
               events={projectData.timeline}
               EventCard={DraggableEventCard}
-              onAddEvent={() => {}}
-              onUpdateEvent={() => {}}
+              onAddEvent={async (event) => {
+                const newProjectData = {
+                  ...projectData,
+                  timeline: [...projectData.timeline, event],
+                };
+                setProjectData(newProjectData);
+                await saveProject(newProjectData);
+              }}
+              onUpdateEvent={async (event) => {
+                const newProjectData = {
+                  ...projectData,
+                  timeline: projectData.timeline.map((e) =>
+                    e.id === event.id ? event : e
+                  ),
+                };
+                setProjectData(newProjectData);
+                await saveProject(newProjectData);
+              }}
+              onRemoveEvent={async (event) => {
+                const confirmed = await new Promise((resolve) => {
+                  Alert.alert(
+                    "Remove Event",
+                    "Are you sure you want to remove this event?",
+                    [
+                      {
+                        text: "Cancel",
+                        style: "cancel",
+                        onPress: () => resolve(false),
+                      },
+                      {
+                        text: "Remove",
+                        style: "destructive",
+                        onPress: () => resolve(true),
+                      },
+                    ]
+                  );
+                });
+
+                if (confirmed) {
+                  const newProjectData = {
+                    ...projectData,
+                    timeline: projectData.timeline.filter(
+                      (e) => e.id !== event.id
+                    ),
+                  };
+                  setProjectData(newProjectData);
+                  await saveProject(newProjectData);
+                }
+              }}
             />
           </Card.Content>
         </Card>
-      </ScrollView>
+      </NestableScrollContainer>
 
       <FAB
         icon="content-save"
         style={styles.fab}
-        onPress={saveProject}
+        onPress={() => saveProject(projectData)}
         visible={isEditing}
       />
     </View>
