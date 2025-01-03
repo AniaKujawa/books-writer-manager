@@ -9,11 +9,13 @@ import { StyledTextInput } from "../../../../components/TextInput";
 import { Timeline } from "../../../../components/Timeline";
 import { DraggableEventCard } from "../../../../components/DraggableEvent";
 import { NestableScrollContainer } from "react-native-draggable-flatlist";
+import { useProjectActions } from "../../../../hooks";
 
 export default function ProjectScreen() {
   const { id } = useLocalSearchParams();
   const [isEditing, setIsEditing] = useState(false);
   const [projectData, setProjectData] = useState<Project | null>(null);
+  const { deleteProject } = useProjectActions();
 
   useEffect(() => {
     const loadProject = async () => {
@@ -66,17 +68,28 @@ export default function ProjectScreen() {
           <Card.Title
             title="Project Details"
             right={(props) => (
-              <IconButton
-                {...props}
-                icon={isEditing ? "check" : "pencil"}
-                onPress={() => {
-                  if (isEditing) {
-                    saveProject();
-                  } else {
-                    setIsEditing(true);
-                  }
-                }}
-              />
+              <View style={{ flexDirection: "row" }}>
+                {isEditing && (
+                  <IconButton
+                    {...props}
+                    icon="delete"
+                    iconColor="red"
+                    onPress={() => deleteProject(projectData.id)}
+                  />
+                )}
+                <IconButton
+                  {...props}
+                  icon={isEditing ? "check" : "pencil"}
+                  iconColor={isEditing ? "green" : undefined}
+                  onPress={() => {
+                    if (isEditing) {
+                      saveProject();
+                    } else {
+                      setIsEditing(true);
+                    }
+                  }}
+                />
+              </View>
             )}
           />
           <Card.Content>

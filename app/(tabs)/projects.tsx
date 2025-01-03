@@ -4,8 +4,11 @@ import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../styles";
 import { Project } from "../../types";
+import { useProjectActions } from "../../hooks";
+import { IconButton } from "react-native-paper";
 
 export default function ProjectsScreen() {
+  const { deleteProject } = useProjectActions();
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
@@ -24,17 +27,30 @@ export default function ProjectsScreen() {
   };
 
   const renderProject = ({ item }: { item: Project }) => (
-    <Link
-      href={{
-        pathname: "/project/[id]",
-        params: { id: item.id, project: JSON.stringify(item) },
-      }}
-      asChild
-    >
-      <TouchableOpacity style={styles.projectCard}>
-        <Text style={styles.projectTitle}>{item.title}</Text>
-      </TouchableOpacity>
-    </Link>
+    <View style={styles.projectContainer}>
+      <Link
+        href={{
+          pathname: "/project/[id]",
+          params: { id: item.id, project: JSON.stringify(item) },
+        }}
+        asChild
+      >
+        <TouchableOpacity style={styles.projectCard}>
+          <Text style={styles.projectTitle}>{item.title}</Text>
+        </TouchableOpacity>
+      </Link>
+      <IconButton
+        icon="delete"
+        iconColor="red"
+        size={20}
+        onPress={() =>
+          deleteProject(item.id, () => {
+            // Refresh projects list after deletion
+            setProjects((prev) => prev.filter((p) => p.id !== item.id));
+          })
+        }
+      />
+    </View>
   );
 
   return (

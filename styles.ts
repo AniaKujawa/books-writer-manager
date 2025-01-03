@@ -77,6 +77,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
   },
   projectCard: {
+    flex: 1,
     backgroundColor: '#fff',
     padding: 16,
     marginBottom: 12,
@@ -119,5 +120,10 @@ export const styles = StyleSheet.create({
   },
   addButton: {
     marginTop: 16,
+  },
+  projectContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
 });
