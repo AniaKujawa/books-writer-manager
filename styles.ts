@@ -95,4 +95,29 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#333',
   },
+  customField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    paddingVertical: 2,
+  },
+  customFieldLabel: {
+    fontWeight: '600',
+    minWidth: 100,
+    marginRight: 4,
+  },
+  customFieldValue: {
+    flex: 1,
+  },
+  addFieldButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+  },
+  addFieldButton: {
+    marginLeft: 8,
+  },
+  addButton: {
+    marginTop: 16,
+  },
 });

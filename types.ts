@@ -11,6 +11,13 @@ export interface Character {
   id: string;
   name: string;
   description: string;
+  customFields: CustomField[];
+}
+
+export interface CustomField {
+  id: string;
+  label: string;
+  value: string;
 }
 
 export interface TimelineEvent {
