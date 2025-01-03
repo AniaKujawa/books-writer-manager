@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   timelineSection: {
     flexDirection: "row",
-    marginBottom: 20,
+    marginBottom: 40,
   },
   chapterIndicator: {
     width: 40,

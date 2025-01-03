@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { FlatList, ListRenderItemInfo, View } from "react-native";
 import { Button, Portal, Modal, TextInput, Text } from "react-native-paper";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -11,9 +11,9 @@ import NestedDraggableFlatList, {
 
 interface TimelineProps {
   events: TimelineEvent[];
-  onAddEvent: (event: TimelineEvent) => void;
-  onUpdateEvent: (event: TimelineEvent) => void;
-  onRemoveEvent: (event: TimelineEvent) => void;
+  onAddEvent: (event: TimelineEvent) => Promise<void>;
+  onUpdateEvent: (event: TimelineEvent) => Promise<void>;
+  onRemoveEvent: (event: TimelineEvent) => Promise<void>;
   EventCard: React.ComponentType<any>;
 }
 
@@ -29,20 +29,18 @@ export const Timeline: React.FC<TimelineProps> = ({
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventChapter, setNewEventChapter] = useState("");
 
-  // Group events by chapter and sort by order within each chapter
-  const groupedEvents =
-    events.reduce((acc, event) => {
-      const chapter = event.chapter;
-      if (!acc[chapter]) {
-        acc[chapter] = [];
-      }
-      acc[chapter].push(event);
-      // Sort events within chapter by order
-      acc[chapter].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      return acc;
-    }, {} as Record<number, TimelineEvent[]>) || [];
+  // Group events by chapter and sort by order
+  const groupedEvents = events.reduce((acc, event) => {
+    const chapter = event.chapter;
+    if (!acc[chapter]) {
+      acc[chapter] = [];
+    }
+    acc[chapter].push(event);
+    // Sort events within chapter by order
+    acc[chapter].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    return acc;
+  }, {} as Record<number, TimelineEvent[]>);
 
-  // Get all chapters and sort them
   const chapters = Object.keys(groupedEvents)
     .map(Number)
     .sort((a, b) => a - b);
@@ -50,7 +48,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   const renderChapterEvents = (chapter: number) => {
     return (
       <NestedDraggableFlatList
-        data={groupedEvents[chapter]}
+        data={groupedEvents[chapter] || []}
         keyExtractor={(item) => item.id}
         renderItem={({
           item,
@@ -64,20 +62,26 @@ export const Timeline: React.FC<TimelineProps> = ({
               isActive={isActive}
               onMove={(newChapter: number) => {
                 if (newChapter !== chapter) {
-                  onUpdateEvent({ ...item, chapter: newChapter });
+                  // Calculate new order for moved item
+                  const targetChapterEvents = groupedEvents[newChapter] || [];
+                  const newOrder = targetChapterEvents.length;
+                  onUpdateEvent({
+                    ...item,
+                    chapter: newChapter,
+                    order: newOrder,
+                  });
                 }
               }}
               onRemove={() => onRemoveEvent(item)}
-              onEdit={(updatedEvent: TimelineEvent) =>
-                onUpdateEvent(updatedEvent)
-              }
             />
           </ScaleDecorator>
         )}
         onDragEnd={({ data }) => {
           // Update order within same chapter
           data.forEach((event, index) => {
-            onUpdateEvent({ ...event, order: index });
+            if (event.order !== index) {
+              onUpdateEvent({ ...event, order: index });
+            }
           });
         }}
       />
