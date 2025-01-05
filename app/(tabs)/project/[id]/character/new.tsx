@@ -1,6 +1,6 @@
 import { useLocalSearchParams, router } from "expo-router";
-import { View } from "react-native";
-import { Button, Card } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Button, Card, IconButton } from "react-native-paper";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,7 +14,44 @@ export default function NewCharacterScreen() {
     id: uuidv4(),
     name: "",
     description: "",
+    customFields: [],
   });
+
+  const addCustomField = () => {
+    setCharacterData({
+      ...characterData,
+      customFields: [
+        ...characterData.customFields,
+        {
+          id: uuidv4(),
+          label: "",
+          value: "",
+        },
+      ],
+    });
+  };
+
+  const removeCustomField = (fieldId: string) => {
+    setCharacterData({
+      ...characterData,
+      customFields: characterData.customFields.filter(
+        (field) => field.id !== fieldId
+      ),
+    });
+  };
+
+  const updateCustomField = (
+    fieldId: string,
+    key: "label" | "value",
+    text: string
+  ) => {
+    setCharacterData({
+      ...characterData,
+      customFields: characterData.customFields.map((field) =>
+        field.id === fieldId ? { ...field, [key]: text } : field
+      ),
+    });
+  };
 
   const saveCharacter = async () => {
     try {
@@ -43,36 +80,74 @@ export default function NewCharacterScreen() {
 
   return (
     <View style={styles.container}>
-      <Card style={styles.section}>
-        <Card.Title title="New Character" />
-        <Card.Content>
-          <StyledTextInput
-            label="Name"
-            value={characterData.name}
-            style={{ marginBottom: 16 }}
-            onChangeText={(text: string) =>
-              setCharacterData({ ...characterData, name: text })
-            }
-          />
-          <StyledTextInput
-            label="Description"
-            value={characterData.description}
-            multiline
-            numberOfLines={3}
-            onChangeText={(text: string) =>
-              setCharacterData({ ...characterData, description: text })
-            }
-          />
-          <Button
-            mode="contained"
-            style={{ marginTop: 16 }}
-            onPress={saveCharacter}
-            disabled={!characterData.name}
-          >
-            Create Character
-          </Button>
-        </Card.Content>
-      </Card>
+      <ScrollView>
+        <Card style={styles.section}>
+          <Card.Title title="New Character" />
+          <Card.Content>
+            <StyledTextInput
+              label="Name"
+              value={characterData.name}
+              style={{ marginBottom: 16 }}
+              onChangeText={(text: string) =>
+                setCharacterData({ ...characterData, name: text })
+              }
+            />
+            <StyledTextInput
+              label="Description"
+              value={characterData.description}
+              multiline
+              numberOfLines={3}
+              style={{ marginBottom: 16 }}
+              onChangeText={(text: string) =>
+                setCharacterData({ ...characterData, description: text })
+              }
+            />
+
+            {/* Custom Fields Section */}
+            <Card.Title
+              title="Additional Info"
+              right={(props) => (
+                <IconButton {...props} icon="plus" onPress={addCustomField} />
+              )}
+            />
+
+            {characterData.customFields.map((field) => (
+              <View key={field.id} style={styles.customField}>
+                <StyledTextInput
+                  value={field.label}
+                  onChangeText={(text: string) =>
+                    updateCustomField(field.id, "label", text)
+                  }
+                  placeholder="Label"
+                  style={[styles.customFieldLabel, { marginBottom: 0 }]}
+                />
+                <StyledTextInput
+                  value={field.value}
+                  onChangeText={(text: string) =>
+                    updateCustomField(field.id, "value", text)
+                  }
+                  placeholder="Value"
+                  style={{ marginBottom: 0, flex: 1 }}
+                />
+                <IconButton
+                  icon="delete"
+                  size={20}
+                  onPress={() => removeCustomField(field.id)}
+                />
+              </View>
+            ))}
+
+            <Button
+              mode="contained"
+              style={{ marginTop: 16 }}
+              onPress={saveCharacter}
+              disabled={!characterData.name}
+            >
+              Create Character
+            </Button>
+          </Card.Content>
+        </Card>
+      </ScrollView>
     </View>
   );
 }
