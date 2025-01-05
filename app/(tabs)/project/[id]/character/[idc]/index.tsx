@@ -3,10 +3,10 @@ import { View, ScrollView, Alert } from "react-native";
 import { Text, FAB, Card, IconButton, Button } from "react-native-paper";
 import { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { generateId } from "@/utils/generateId";
 import { styles } from "../../../../../../styles";
 import { Character, Project, CustomField } from "../../../../../../types";
 import { StyledTextInput } from "../../../../../../components/TextInput";
-import { v4 as uuidv4 } from "uuid";
 
 export default function CharacterScreen() {
   const { id, idc } = useLocalSearchParams();
@@ -65,7 +65,7 @@ export default function CharacterScreen() {
     if (!characterData) return;
 
     const newField: CustomField = {
-      id: uuidv4(),
+      id: generateId(),
       label: newFieldLabel,
       value: newFieldValue,
     };

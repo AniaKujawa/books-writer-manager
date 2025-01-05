@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { View, ScrollView } from "react-native";
 import { Button, Text, Card } from "react-native-paper";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { generateId } from "@/utils/generateId";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../../styles";
 import { Project } from "../../../types";
@@ -10,7 +10,7 @@ import { StyledTextInput } from "../../../components/TextInput";
 
 export default function NewProjectScreen() {
   const [projectData, setProjectData] = useState<Project>({
-    id: uuidv4(),
+    id: generateId(),
     title: "",
     description: "",
     notes: "",

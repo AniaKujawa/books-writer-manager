@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Button, Portal, Modal, TextInput, Text } from "react-native-paper";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { generateId } from "@/utils/generateId";
 import { TimelineEvent } from "../../types";
 import { styles } from "./Timeline.styles";
 import NestedDraggableFlatList, {
@@ -158,7 +158,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             mode="contained"
             onPress={() => {
               onAddEvent({
-                id: uuidv4(),
+                id: generateId(),
                 title: newEventTitle,
                 description: newEventDescription,
                 chapter: parseInt(newEventChapter) || 1,

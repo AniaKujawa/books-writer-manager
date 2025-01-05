@@ -2,16 +2,16 @@ import { useLocalSearchParams, router } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { Button, Card, IconButton } from "react-native-paper";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../../../../styles";
 import { Character, Project } from "../../../../../types";
 import { StyledTextInput } from "../../../../../components/TextInput";
+import { generateId } from "@/utils/generateId";
 
 export default function NewCharacterScreen() {
   const { id } = useLocalSearchParams();
   const [characterData, setCharacterData] = useState<Character>({
-    id: uuidv4(),
+    id: generateId(),
     name: "",
     description: "",
     customFields: [],
@@ -23,7 +23,7 @@ export default function NewCharacterScreen() {
       customFields: [
         ...characterData.customFields,
         {
-          id: uuidv4(),
+          id: generateId(),
           label: "",
           value: "",
         },
