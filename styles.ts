@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center",
-    marginTop: 32,
+    marginTop: 8,
     fontSize: 16,
     color: "#666",
   },
@@ -134,5 +134,13 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#333',
+  },
+  infoText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#9370DB',
+    fontStyle: 'italic',
+    margin: 32,
+    marginHorizontal: 16,
   },
 });

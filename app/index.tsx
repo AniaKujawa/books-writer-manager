@@ -79,32 +79,36 @@ export default function HomeScreen() {
           {currentProject.notes ? (
             <Text style={styles.notes}>{currentProject.notes}</Text>
           ) : (
-            <Text style={styles.emptyText}>No notes yet</Text>
+            <Text style={styles.emptyText}>You have no notes yet</Text>
           )}
         </View>
 
         {/* Characters Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Characters</Text>
-          <ScrollView horizontal style={styles.characterList}>
-            {currentProject.characters?.map((character) => (
-              <Link
-                key={character.id}
-                href={{
-                  pathname: "/project/[id]/character/[idc]",
-                  params: {
-                    id: currentProject.id,
-                    idc: character.id,
-                  },
-                }}
-                asChild
-              >
-                <TouchableOpacity style={styles.characterCard}>
-                  <Text style={styles.characterName}>{character.name}</Text>
-                </TouchableOpacity>
-              </Link>
-            ))}
-          </ScrollView>
+          {currentProject.characters.length > 0 ? (
+            <ScrollView horizontal style={styles.characterList}>
+              {currentProject.characters?.map((character) => (
+                <Link
+                  key={character.id}
+                  href={{
+                    pathname: "/project/[id]/character/[idc]",
+                    params: {
+                      id: currentProject.id,
+                      idc: character.id,
+                    },
+                  }}
+                  asChild
+                >
+                  <TouchableOpacity style={styles.characterCard}>
+                    <Text style={styles.characterName}>{character.name}</Text>
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </ScrollView>
+          ) : (
+            <Text style={styles.emptyText}>You have no characters yet</Text>
+          )}
         </View>
 
         {/* Timeline Section */}
