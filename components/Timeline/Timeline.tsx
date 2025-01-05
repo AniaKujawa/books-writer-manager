@@ -16,6 +16,7 @@ interface TimelineProps {
   onRemoveEvent: (event: TimelineEvent) => Promise<void>;
   EventCard: React.ComponentType<any>;
   isEditable?: boolean;
+  projectId: string;
 }
 
 export const Timeline: React.FC<TimelineProps> = ({
@@ -25,6 +26,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   onRemoveEvent,
   EventCard,
   isEditable = true,
+  projectId,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState("");
@@ -63,6 +65,7 @@ export const Timeline: React.FC<TimelineProps> = ({
               onLongPress={drag}
               isActive={isActive}
               isEditable={isEditable}
+              projectId={projectId}
               onMove={(newChapter: number) => {
                 if (newChapter !== chapter) {
                   // Calculate new order for moved item

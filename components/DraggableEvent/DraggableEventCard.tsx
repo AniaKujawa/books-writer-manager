@@ -13,6 +13,7 @@ import { EventCard } from "../EventCard";
 
 interface DraggableEventCardProps {
   event: TimelineEvent;
+  projectId: string;
   onMove: (newChapter: number) => void;
   onRemove: (event: TimelineEvent) => void;
   onLongPress?: () => void;
@@ -22,6 +23,7 @@ interface DraggableEventCardProps {
 
 export const DraggableEventCard: React.FC<DraggableEventCardProps> = ({
   event,
+  projectId,
   onMove,
   onRemove,
   onLongPress,
@@ -71,7 +73,12 @@ export const DraggableEventCard: React.FC<DraggableEventCardProps> = ({
           animatedStyle,
         ]}
       >
-        <EventCard event={event} isEditable={isEditable} onRemove={onRemove} />
+        <EventCard
+          event={event}
+          isEditable={isEditable}
+          projectId={projectId}
+          onRemove={onRemove}
+        />
       </Animated.View>
     </GestureDetector>
   );

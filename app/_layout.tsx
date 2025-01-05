@@ -50,6 +50,13 @@ export default function Layout() {
               headerBackTitle: "Back",
             }}
           />
+          <Stack.Screen
+            name="(tabs)/project/[id]/event/[idc]/index"
+            options={{
+              title: "Event Details",
+              headerBackTitle: "Back",
+            }}
+          />
         </Stack>
       </GestureHandlerRootView>
     </PaperProvider>

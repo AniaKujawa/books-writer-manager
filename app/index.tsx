@@ -90,10 +90,10 @@ export default function HomeScreen() {
               <Link
                 key={character.id}
                 href={{
-                  pathname: "/character/[id]",
+                  pathname: "/project/[id]/character/[idc]",
                   params: {
-                    id: character.id,
-                    character: JSON.stringify(character),
+                    id: currentProject.id,
+                    idc: character.id,
                   },
                 }}
                 asChild
@@ -120,6 +120,7 @@ export default function HomeScreen() {
                     onRemoveEvent={async () => {}}
                     EventCard={EventCard}
                     isEditable={false}
+                    projectId={currentProject.id}
                   />
                 </NestableScrollContainer>
               ) : (

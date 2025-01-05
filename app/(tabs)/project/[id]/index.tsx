@@ -186,6 +186,7 @@ export default function ProjectScreen() {
           <Card.Content>
             <Timeline
               events={projectData.timeline}
+              projectId={projectData.id}
               EventCard={DraggableEventCard}
               onAddEvent={async (event) => {
                 const newProjectData = {
