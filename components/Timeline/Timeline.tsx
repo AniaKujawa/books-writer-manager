@@ -1,4 +1,4 @@
-import { FlatList, ListRenderItemInfo, View } from "react-native";
+import { View } from "react-native";
 import { Button, Portal, Modal, TextInput, Text } from "react-native-paper";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +15,7 @@ interface TimelineProps {
   onUpdateEvent: (event: TimelineEvent) => Promise<void>;
   onRemoveEvent: (event: TimelineEvent) => Promise<void>;
   EventCard: React.ComponentType<any>;
+  isEditable?: boolean;
 }
 
 export const Timeline: React.FC<TimelineProps> = ({
@@ -23,6 +24,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   onUpdateEvent,
   onRemoveEvent,
   EventCard,
+  isEditable = true,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState("");
@@ -60,6 +62,7 @@ export const Timeline: React.FC<TimelineProps> = ({
               event={item}
               onLongPress={drag}
               isActive={isActive}
+              isEditable={isEditable}
               onMove={(newChapter: number) => {
                 if (newChapter !== chapter) {
                   // Calculate new order for moved item
@@ -106,13 +109,15 @@ export const Timeline: React.FC<TimelineProps> = ({
         ))}
       </View>
 
-      <Button
-        mode="contained"
-        onPress={() => setIsModalVisible(true)}
-        style={styles.addButton}
-      >
-        Add Event
-      </Button>
+      {isEditable && (
+        <Button
+          mode="contained"
+          onPress={() => setIsModalVisible(true)}
+          style={styles.addButton}
+        >
+          Add Event
+        </Button>
+      )}
 
       <Portal>
         <Modal

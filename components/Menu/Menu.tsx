@@ -39,6 +39,11 @@ function FABGroup() {
             label: "Clear Storage",
             onPress: clearStorage,
           },
+          {
+            icon: "home",
+            label: "Home",
+            onPress: () => router.push("/"),
+          },
         ]}
         onStateChange={({ open }) => setOpen(open)}
         style={styles.fab}

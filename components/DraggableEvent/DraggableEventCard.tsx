@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { styles } from "./DraggableEventCard.styles";
+import { EventCard } from "../EventCard";
 
 interface DraggableEventCardProps {
   event: TimelineEvent;
@@ -16,6 +17,7 @@ interface DraggableEventCardProps {
   onRemove: (event: TimelineEvent) => void;
   onLongPress?: () => void;
   isActive?: boolean;
+  isEditable?: boolean;
 }
 
 export const DraggableEventCard: React.FC<DraggableEventCardProps> = ({
@@ -24,6 +26,7 @@ export const DraggableEventCard: React.FC<DraggableEventCardProps> = ({
   onRemove,
   onLongPress,
   isActive,
+  isEditable = true,
 }) => {
   const translateY = useSharedValue(0);
 
@@ -68,25 +71,7 @@ export const DraggableEventCard: React.FC<DraggableEventCardProps> = ({
           animatedStyle,
         ]}
       >
-        <Card>
-          <Card.Content>
-            <View style={styles.contentContainer}>
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{event.title}</Text>
-                <Text style={styles.description}>
-                  {event.description.length > 50
-                    ? event.description.slice(0, 50) + "..."
-                    : event.description}
-                </Text>
-              </View>
-              <IconButton
-                icon="delete"
-                size={20}
-                onPress={() => onRemove(event)}
-              />
-            </View>
-          </Card.Content>
-        </Card>
+        <EventCard event={event} isEditable={isEditable} onRemove={onRemove} />
       </Animated.View>
     </GestureDetector>
   );

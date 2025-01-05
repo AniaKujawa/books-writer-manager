@@ -10,6 +10,7 @@ import { Timeline } from "../../../../components/Timeline";
 import { DraggableEventCard } from "../../../../components/DraggableEvent";
 import { NestableScrollContainer } from "react-native-draggable-flatlist";
 import { useProjectActions } from "../../../../hooks";
+import { Menu } from "../../../../components/Menu";
 
 export default function ProjectScreen() {
   const { id } = useLocalSearchParams();
@@ -246,6 +247,7 @@ export default function ProjectScreen() {
         onPress={() => saveProject(projectData)}
         visible={isEditing}
       />
+      {!isEditing && <Menu />}
     </View>
   );
 }
