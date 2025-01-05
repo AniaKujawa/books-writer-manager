@@ -3,7 +3,6 @@ import React, { useState, useCallback } from "react";
 import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IconButton } from "react-native-paper";
-import { Menu } from "@/components/Menu";
 
 import { styles } from "../../styles";
 import { Project } from "../../types";
@@ -69,7 +68,6 @@ export default function ProjectsScreen() {
           </Text>
         }
       />
-      <Menu />
     </View>
   );
 }

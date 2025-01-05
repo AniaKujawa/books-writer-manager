@@ -1,10 +1,11 @@
 import { Stack } from "expo-router";
-import { PaperProvider } from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { paperTheme } from "../theme";
 
 export default function Layout() {
   return (
-    <PaperProvider>
+    <PaperProvider theme={paperTheme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
