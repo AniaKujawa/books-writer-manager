@@ -1,7 +1,8 @@
-import { useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import { View, Alert } from "react-native";
 import { Text, FAB, Card, IconButton } from "react-native-paper";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../../../styles";
 import { Project } from "../../../../types";
@@ -18,24 +19,26 @@ export default function ProjectScreen() {
   const [projectData, setProjectData] = useState<Project | null>(null);
   const { deleteProject } = useProjectActions();
 
-  useEffect(() => {
-    const loadProject = async () => {
-      try {
-        const savedProjects = await AsyncStorage.getItem("projects");
-        if (savedProjects) {
-          const projects = JSON.parse(savedProjects);
-          const foundProject = projects.find((p: Project) => p.id === id);
-          if (foundProject) {
-            setProjectData(foundProject);
-          }
-        }
-      } catch (error) {
-        console.error("Error loading project:", error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      loadProject();
+    }, [id])
+  );
 
-    loadProject();
-  }, [id]);
+  const loadProject = async () => {
+    try {
+      const savedProjects = await AsyncStorage.getItem("projects");
+      if (savedProjects) {
+        const projects = JSON.parse(savedProjects);
+        const project = projects.find((p: Project) => p.id === id);
+        if (project) {
+          setProjectData(project);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading project:", error);
+    }
+  };
 
   if (!projectData) {
     return (

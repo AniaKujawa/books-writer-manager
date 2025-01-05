@@ -1,7 +1,7 @@
-import { useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import { View, ScrollView, Alert } from "react-native";
 import { Text, FAB, Card, IconButton, Button } from "react-native-paper";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../../../../../styles";
 import { Character, Project, CustomField } from "../../../../../../types";
@@ -16,29 +16,31 @@ export default function CharacterScreen() {
   const [newFieldValue, setNewFieldValue] = useState("");
   const [isAddingField, setIsAddingField] = useState(false);
 
-  useEffect(() => {
-    const loadCharacter = async () => {
-      try {
-        const savedProjects = await AsyncStorage.getItem("projects");
-        if (savedProjects) {
-          const projects = JSON.parse(savedProjects);
-          const project = projects.find((p: Project) => p.id === id);
-          if (project) {
-            const foundCharacter = project.characters.find(
-              (c: Character) => c.id === idc
-            );
-            if (foundCharacter) {
-              setCharacterData(foundCharacter);
-            }
+  useFocusEffect(
+    useCallback(() => {
+      loadCharacter();
+    }, [id, idc])
+  );
+
+  const loadCharacter = async () => {
+    try {
+      const savedProjects = await AsyncStorage.getItem("projects");
+      if (savedProjects) {
+        const projects = JSON.parse(savedProjects);
+        const project = projects.find((p: Project) => p.id === id);
+        if (project) {
+          const foundCharacter = project.characters.find(
+            (c: Character) => c.id === idc
+          );
+          if (foundCharacter) {
+            setCharacterData(foundCharacter);
           }
         }
-      } catch (error) {
-        console.error("Error loading character:", error);
       }
-    };
-
-    loadCharacter();
-  }, [id, idc]);
+    } catch (error) {
+      console.error("Error loading character:", error);
+    }
+  };
 
   const saveCharacter = async () => {
     try {
@@ -217,7 +219,7 @@ export default function CharacterScreen() {
                       <>
                         <StyledTextInput
                           value={field.label}
-                          onChangeText={(text) => {
+                          onChangeText={(text: string) => {
                             setCharacterData({
                               ...characterData,
                               customFields: characterData.customFields.map(
@@ -230,7 +232,7 @@ export default function CharacterScreen() {
                         />
                         <StyledTextInput
                           value={field.value}
-                          onChangeText={(text) => {
+                          onChangeText={(text: string) => {
                             setCharacterData({
                               ...characterData,
                               customFields: characterData.customFields.map(

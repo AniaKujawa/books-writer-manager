@@ -1,7 +1,7 @@
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ScrollView, View, Alert } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../../../../../../styles";
 import { TimelineEvent, Project } from "../../../../../../types";
@@ -13,29 +13,31 @@ export default function EventScreen() {
   const [eventData, setEventData] = useState<TimelineEvent | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    const loadEvent = async () => {
-      try {
-        const savedProjects = await AsyncStorage.getItem("projects");
-        if (savedProjects) {
-          const projects = JSON.parse(savedProjects);
-          const project = projects.find((p: Project) => p.id === id);
-          if (project) {
-            const foundEvent = project.timeline.find(
-              (e: TimelineEvent) => e.id === idc
-            );
-            if (foundEvent) {
-              setEventData(foundEvent);
-            }
+  useFocusEffect(
+    useCallback(() => {
+      loadEvent();
+    }, [id, idc])
+  );
+
+  const loadEvent = async () => {
+    try {
+      const savedProjects = await AsyncStorage.getItem("projects");
+      if (savedProjects) {
+        const projects = JSON.parse(savedProjects);
+        const project = projects.find((p: Project) => p.id === id);
+        if (project) {
+          const foundEvent = project.timeline.find(
+            (e: TimelineEvent) => e.id === idc
+          );
+          if (foundEvent) {
+            setEventData(foundEvent);
           }
         }
-      } catch (error) {
-        console.error("Error loading event:", error);
       }
-    };
-
-    loadEvent();
-  }, [id, idc]);
+    } catch (error) {
+      console.error("Error loading event:", error);
+    }
+  };
 
   const saveEvent = async () => {
     try {

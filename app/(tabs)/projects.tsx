@@ -1,5 +1,5 @@
-import { Link } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { Link, useFocusEffect } from "expo-router";
+import React, { useState, useCallback } from "react";
 import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IconButton } from "react-native-paper";
@@ -13,9 +13,11 @@ export default function ProjectsScreen() {
   const { deleteProject } = useProjectActions();
   const [projects, setProjects] = useState<Project[]>([]);
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadProjects();
+    }, [])
+  );
 
   const loadProjects = async () => {
     try {

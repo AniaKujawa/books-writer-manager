@@ -1,23 +1,24 @@
-import { Link, router } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { Link, router, useFocusEffect } from "expo-router";
+import React, { useState, useCallback } from "react";
 import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Card, IconButton, Provider } from "react-native-paper";
+import { NestableScrollContainer } from "react-native-draggable-flatlist";
+import { Timeline } from "@/components/Timeline";
+import { EventCard } from "@/components/EventCard";
 import { Menu } from "@/components/Menu";
 
 import { styles } from "../styles";
 import { Project } from "../types";
-import { Timeline } from "@/components/Timeline";
-import { DraggableEventCard } from "@/components/DraggableEvent";
-import { NestableScrollContainer } from "react-native-draggable-flatlist";
-import { EventCard } from "@/components/EventCard";
 
 export default function HomeScreen() {
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
 
-  useEffect(() => {
-    loadCurrentProject();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadCurrentProject();
+    }, [])
+  );
 
   const loadCurrentProject = async () => {
     try {
