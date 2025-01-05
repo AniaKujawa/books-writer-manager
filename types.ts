@@ -2,6 +2,7 @@ export interface Project {
   id: string;
   title: string;
   description: string;
+  notes?: string;
   characters: Character[];
   timeline: TimelineEvent[];
   currentPosition: number;

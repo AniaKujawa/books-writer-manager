@@ -126,4 +126,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  notesInput: {
+    minHeight: 120,
+    textAlignVertical: 'top',
+  },
+  notes: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#333',
+  },
 });

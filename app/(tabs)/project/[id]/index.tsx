@@ -120,6 +120,26 @@ export default function ProjectScreen() {
           </Card.Content>
         </Card>
 
+        {/* Notes Section */}
+        <Card style={styles.section}>
+          <Card.Title title="Notes" />
+          <Card.Content>
+            {isEditing ? (
+              <StyledTextInput
+                value={projectData.notes || ""}
+                onChangeText={(text: string) =>
+                  setProjectData({ ...projectData, notes: text })
+                }
+                multiline
+                numberOfLines={6}
+                style={styles.notesInput}
+              />
+            ) : (
+              <Text style={styles.notes}>{projectData.notes || "-"}</Text>
+            )}
+          </Card.Content>
+        </Card>
+
         {/* Characters Section */}
         <Card style={styles.section}>
           <Card.Title
@@ -161,6 +181,7 @@ export default function ProjectScreen() {
 
         {/* Timeline Section */}
         <Card style={styles.section}>
+          <Card.Title title="Timeline" />
           <Card.Content>
             <Timeline
               events={projectData.timeline}

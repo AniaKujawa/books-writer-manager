@@ -2,30 +2,11 @@ import { Link, router } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, FAB, IconButton, Portal, Provider } from "react-native-paper";
+import { Button, IconButton, Provider } from "react-native-paper";
+import { Menu } from "@/components/Menu";
+
 import { styles } from "../styles";
-
-interface Character {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface TimelineEvent {
-  id: number;
-  title: string;
-  description: string;
-  chapter: number;
-  position: number; // percentage through the book (0-100)
-}
-
-interface Project {
-  id: number;
-  title: string;
-  characters: Character[];
-  timeline: TimelineEvent[];
-  currentPosition: number; // current reading/writing position (0-100)
-}
+import { Project } from "../types";
 
 export default function HomeScreen() {
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
@@ -72,7 +53,6 @@ export default function HomeScreen() {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            // marginBottom: 16,
           }}
         >
           <Text style={styles.title}>{currentProject.title}</Text>
@@ -127,52 +107,8 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
-
-        <FABGroup />
+        <Menu />
       </View>
     </Provider>
-  );
-}
-
-const clearStorage = async () => {
-  try {
-    await AsyncStorage.clear();
-    console.log("Storage successfully cleared!");
-  } catch (e) {
-    console.error("Error clearing storage:", e);
-  }
-};
-
-// Separate FAB group component
-function FABGroup() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Portal>
-      <FAB.Group
-        open={open}
-        visible
-        icon={open ? "close" : "menu"}
-        actions={[
-          {
-            icon: "plus",
-            label: "New Project",
-            onPress: () => router.push("/project/new"),
-          },
-          {
-            icon: "folder",
-            label: "All Projects",
-            onPress: () => router.push("/projects"),
-          },
-          {
-            icon: "delete",
-            label: "Clear Storage",
-            onPress: clearStorage,
-          },
-        ]}
-        onStateChange={({ open }) => setOpen(open)}
-        style={styles.fab}
-      />
-    </Portal>
   );
 }

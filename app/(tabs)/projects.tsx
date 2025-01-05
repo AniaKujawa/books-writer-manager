@@ -2,10 +2,12 @@ import { Link } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IconButton } from "react-native-paper";
+import { Menu } from "@/components/Menu";
+
 import { styles } from "../../styles";
 import { Project } from "../../types";
 import { useProjectActions } from "../../hooks";
-import { IconButton } from "react-native-paper";
 
 export default function ProjectsScreen() {
   const { deleteProject } = useProjectActions();
@@ -65,6 +67,7 @@ export default function ProjectsScreen() {
           </Text>
         }
       />
+      <Menu />
     </View>
   );
 }
