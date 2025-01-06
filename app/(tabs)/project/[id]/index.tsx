@@ -239,6 +239,23 @@ export default function ProjectScreen() {
                   await saveProject(newProjectData);
                 }
               }}
+              finishedChapters={projectData.finishedChapters}
+              onChapterToggle={async (chapter: number) => {
+                const updatedFinishedChapters =
+                  projectData.finishedChapters.includes(chapter)
+                    ? projectData.finishedChapters.filter(
+                        (ch) => ch !== chapter
+                      )
+                    : [...projectData.finishedChapters, chapter];
+
+                const newProjectData = {
+                  ...projectData,
+                  finishedChapters: updatedFinishedChapters,
+                };
+
+                setProjectData(newProjectData);
+                await saveProject(newProjectData);
+              }}
             />
           </Card.Content>
         </Card>

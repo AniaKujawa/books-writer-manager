@@ -5,7 +5,7 @@ export interface Project {
   notes?: string;
   characters: Character[];
   timeline: TimelineEvent[];
-  currentPosition: number;
+  finishedChapters: number[];
 }
 
 export interface Character {

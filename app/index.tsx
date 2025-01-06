@@ -126,6 +126,8 @@ export default function HomeScreen() {
                     EventCard={EventCard}
                     isEditable={false}
                     projectId={currentProject.id}
+                    finishedChapters={currentProject.finishedChapters}
+                    onChapterToggle={async () => {}}
                   />
                 </NestableScrollContainer>
               ) : (

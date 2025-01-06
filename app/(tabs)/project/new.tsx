@@ -16,7 +16,7 @@ export default function NewProjectScreen() {
     notes: "",
     characters: [],
     timeline: [],
-    currentPosition: 0,
+    finishedChapters: [],
   });
 
   const saveProject = async () => {

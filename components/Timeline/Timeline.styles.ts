@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   timelineSection: {
     flexDirection: "row",
-    marginBottom: 40,
+    marginBottom: 10,
   },
   chapterIndicator: {
     width: 40,
@@ -48,14 +48,21 @@ export const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#6B4EFF",
-    justifyContent: "center",
-    alignItems: "center",
+    borderWidth: 2,
+    borderColor: '#6B4EFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  filledCircle: {
+    backgroundColor: '#6B4EFF',
   },
   chapterText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
+    color: '#6B4EFF',
+    fontWeight: 'bold',
+  },
+  filledChapterText: {
+    color: 'white',
   },
   line: {
     width: 2,

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Pressable } from "react-native";
 import { Button, Portal, Modal, TextInput, Text } from "react-native-paper";
 import { useState } from "react";
 import { generateId } from "@/utils/generateId";
@@ -17,6 +17,8 @@ interface TimelineProps {
   EventCard: React.ComponentType<any>;
   isEditable?: boolean;
   projectId: string;
+  finishedChapters: number[];
+  onChapterToggle: (chapter: number) => void;
 }
 
 export const Timeline: React.FC<TimelineProps> = ({
@@ -27,6 +29,8 @@ export const Timeline: React.FC<TimelineProps> = ({
   EventCard,
   isEditable = true,
   projectId,
+  finishedChapters = [],
+  onChapterToggle,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState("");
@@ -100,9 +104,23 @@ export const Timeline: React.FC<TimelineProps> = ({
         {chapters.map((chapter) => (
           <View key={chapter} style={styles.timelineSection}>
             <View style={styles.chapterIndicator}>
-              <View style={styles.circle}>
-                <Text style={styles.chapterText}>{chapter}</Text>
-              </View>
+              <Pressable
+                onPress={() => onChapterToggle?.(chapter)}
+                style={() => [
+                  styles.circle,
+                  finishedChapters.includes(chapter) && styles.filledCircle,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.chapterText,
+                    finishedChapters.includes(chapter) &&
+                      styles.filledChapterText,
+                  ]}
+                >
+                  {chapter}
+                </Text>
+              </Pressable>
               <View style={styles.line} />
             </View>
             <View style={styles.eventsContainer}>
