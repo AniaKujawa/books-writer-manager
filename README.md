@@ -30,13 +30,17 @@ A React Native mobile app designed to help writers organize their stories, chara
 
 ## Screenshots
 
-![See current project](./assets/screenshots/current-project.jpg)
-![Edit project](./assets/screenshots/edit-project.jpg)
-![Edit character](./assets/screenshots/character-details.jpg)
-![Add new event](./assets/screenshots/add-event.jpg)
-![Use drag&drop to reorder events](./assets/screenshots/timeline-drag-and-drop.jpg)
-![Monitor progress in the book by checking written chapters](./assets/screenshots/project-details-timeline-checked.jpg)
-![Manage multiple projects](./assets/screenshots/projects-list.jpg)
+|                                     See current project                                      |                                    Edit project                                    |                                      Edit character                                       |
+| :------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
+| <img src="./assets/screenshots/current-project.jpg" width="200" alt="See current project" /> | <img src="./assets/screenshots/edit-project.jpg" width="200" alt="Edit project" /> | <img src="./assets/screenshots/character-details.jpg" width="200" alt="Edit character" /> |
+
+|                                  Add new event                                   |                                         Use drag&drop to reorder events                                         |                                                    Monitor progress by checking written chapters                                                    |
+| :------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="./assets/screenshots/add-event.jpg" width="200" alt="Add new event" /> | <img src="./assets/screenshots/timeline-drag-and-drop.jpg" width="200" alt="Use drag&drop to reorder events" /> | <img src="./assets/screenshots/project-details-timeline-checked.jpg" width="200" alt="Monitor progress in the book by checking written chapters" /> |
+
+|                                    Manage multiple projects                                     |
+| :---------------------------------------------------------------------------------------------: |
+| <img src="./assets/screenshots/projects-list.jpg" width="200" alt="Manage multiple projects" /> |
 
 ## Tech Stack
 
