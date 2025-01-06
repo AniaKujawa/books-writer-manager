@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "writer-manager",
-    "slug": "writer-manager",
+    "name": "Books Writer Manager",
+    "slug": "books-writer-manager",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,12 +13,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.annakujawa.bookswritermanager"
     },
     "android": {
+      "package": "com.annakujawa.bookswritermanager",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
@@ -26,6 +29,14 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "91f0a5af-4e15-45dc-8bb9-e099a32f3588"
+      }
+    }
   }
 }
