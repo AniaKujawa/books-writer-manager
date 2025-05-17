@@ -1,13 +1,13 @@
 import { View, Pressable } from "react-native";
-import { Button, Portal, Modal, TextInput, Text } from "react-native-paper";
-import { useState } from "react";
-import { generateId } from "@/utils/generateId";
+import { Text } from "react-native-paper";
 import { TimelineEvent } from "../../types";
 import { styles } from "./Timeline.styles";
 import NestedDraggableFlatList, {
   RenderItemParams,
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
+import { AddEventModal } from "./AddEventModal";
+import { useMemo, useCallback } from "react";
 
 interface TimelineProps {
   events: TimelineEvent[];
@@ -32,167 +32,136 @@ export const Timeline: React.FC<TimelineProps> = ({
   finishedChapters = [],
   onChapterToggle,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newEventTitle, setNewEventTitle] = useState("");
-  const [newEventDescription, setNewEventDescription] = useState("");
-  const [newEventChapter, setNewEventChapter] = useState("");
+  // Memoize grouped events and chapters
+  const { groupedEvents, chapters } = useMemo(() => {
+    const groupedEvents = new Map<number, TimelineEvent[]>();
 
-  // Group events by chapter and sort by order
-  const groupedEvents = events.reduce((acc, event) => {
-    const chapter = event.chapter;
-    if (!acc[chapter]) {
-      acc[chapter] = [];
-    }
-    acc[chapter].push(event);
-    // Sort events within chapter by order
-    acc[chapter].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    return acc;
-  }, {} as Record<number, TimelineEvent[]>);
+    events.forEach((event) => {
+      const chapter = event.chapter;
+      if (!groupedEvents.has(chapter)) {
+        groupedEvents.set(chapter, []);
+      }
+      groupedEvents.get(chapter)?.push(event);
+    });
 
-  const chapters = Object.keys(groupedEvents)
-    .map(Number)
-    .sort((a, b) => a - b);
+    // Sort each chapter's events
+    groupedEvents.forEach((events) => {
+      events.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    });
 
-  const renderChapterEvents = (chapter: number) => {
-    return (
-      <NestedDraggableFlatList
-        data={groupedEvents[chapter] || []}
-        keyExtractor={(item) => item.id}
-        renderItem={({
-          item,
-          drag,
-          isActive,
-        }: RenderItemParams<TimelineEvent>) => (
-          <ScaleDecorator>
-            <EventCard
-              event={item}
-              onLongPress={drag}
-              isActive={isActive}
-              isEditable={isEditable}
-              projectId={projectId}
-              onMove={(newChapter: number) => {
-                if (newChapter !== chapter) {
-                  // Calculate new order for moved item
-                  const targetChapterEvents = groupedEvents[newChapter] || [];
-                  const newOrder = targetChapterEvents.length;
-                  onUpdateEvent({
-                    ...item,
-                    chapter: newChapter,
-                    order: newOrder,
-                  });
+    const chapters = Array.from(groupedEvents.keys()).sort((a, b) => a - b);
+
+    return { groupedEvents, chapters };
+  }, [events]);
+
+  // Memoize event handlers
+  const handleMove = useCallback(
+    (item: TimelineEvent, newChapter: number, currentChapter: number) => {
+      if (newChapter !== currentChapter) {
+        const targetChapterEvents = groupedEvents.get(newChapter) || [];
+        const newOrder = targetChapterEvents.length;
+        onUpdateEvent({
+          ...item,
+          chapter: newChapter,
+          order: newOrder,
+        });
+      }
+    },
+    [groupedEvents, onUpdateEvent]
+  );
+
+  const handleDragEnd = useCallback(
+    (data: TimelineEvent[]) => {
+      const updates = data
+        .map((event, index) => ({
+          ...event,
+          order: index,
+        }))
+        .filter((event) => event.order !== event.order);
+
+      updates.forEach((event) => onUpdateEvent(event));
+    },
+    [onUpdateEvent]
+  );
+
+  const renderChapterEvents = useCallback(
+    (chapter: number) => {
+      return (
+        <NestedDraggableFlatList
+          data={groupedEvents.get(chapter) || []}
+          keyExtractor={(item) => item.id}
+          renderItem={({
+            item,
+            drag,
+            isActive,
+          }: RenderItemParams<TimelineEvent>) => (
+            <ScaleDecorator>
+              <EventCard
+                event={item}
+                onLongPress={drag}
+                isActive={isActive}
+                isEditable={isEditable}
+                projectId={projectId}
+                onMove={(newChapter: number) =>
+                  handleMove(item, newChapter, chapter)
                 }
-              }}
-              onRemove={() => onRemoveEvent(item)}
-            />
-          </ScaleDecorator>
-        )}
-        onDragEnd={({ data }) => {
-          // Update order within same chapter
-          data.forEach((event, index) => {
-            if (event.order !== index) {
-              onUpdateEvent({ ...event, order: index });
-            }
-          });
-        }}
-      />
-    );
-  };
+                onRemove={() => onRemoveEvent(item)}
+              />
+            </ScaleDecorator>
+          )}
+          onDragEnd={({ data }) => handleDragEnd(data)}
+          removeClippedSubviews={true}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          initialNumToRender={5}
+          updateCellsBatchingPeriod={50}
+        />
+      );
+    },
+    [
+      groupedEvents,
+      isEditable,
+      projectId,
+      onRemoveEvent,
+      handleMove,
+      handleDragEnd,
+    ]
+  );
+
+  const renderChapter = useCallback(
+    (chapter: number) => (
+      <View key={chapter} style={styles.timelineSection}>
+        <View style={styles.chapterIndicator}>
+          <Pressable
+            onPress={() => onChapterToggle?.(chapter)}
+            style={() => [
+              styles.circle,
+              finishedChapters.includes(chapter) && styles.filledCircle,
+            ]}
+          >
+            <Text
+              style={[
+                styles.chapterText,
+                finishedChapters.includes(chapter) && styles.filledChapterText,
+              ]}
+            >
+              {chapter}
+            </Text>
+          </Pressable>
+          <View style={styles.line} />
+        </View>
+        <View style={styles.eventsContainer}>
+          {renderChapterEvents(chapter)}
+        </View>
+      </View>
+    ),
+    [finishedChapters, onChapterToggle, renderChapterEvents]
+  );
 
   return (
     <View style={styles.container}>
-      <View style={styles.timeline}>
-        {chapters.map((chapter) => (
-          <View key={chapter} style={styles.timelineSection}>
-            <View style={styles.chapterIndicator}>
-              <Pressable
-                onPress={() => onChapterToggle?.(chapter)}
-                style={() => [
-                  styles.circle,
-                  finishedChapters.includes(chapter) && styles.filledCircle,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.chapterText,
-                    finishedChapters.includes(chapter) &&
-                      styles.filledChapterText,
-                  ]}
-                >
-                  {chapter}
-                </Text>
-              </Pressable>
-              <View style={styles.line} />
-            </View>
-            <View style={styles.eventsContainer}>
-              {renderChapterEvents(chapter)}
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {isEditable && (
-        <Button
-          mode="contained"
-          onPress={() => setIsModalVisible(true)}
-          style={styles.addButton}
-        >
-          Add Event
-        </Button>
-      )}
-
-      <Portal>
-        <Modal
-          visible={isModalVisible}
-          onDismiss={() => setIsModalVisible(false)}
-          contentContainerStyle={{
-            backgroundColor: "white",
-            padding: 20,
-            margin: 20,
-            borderRadius: 12,
-          }}
-        >
-          <TextInput
-            label="Title"
-            value={newEventTitle}
-            onChangeText={setNewEventTitle}
-            style={{ marginBottom: 12 }}
-          />
-          <TextInput
-            label="Description"
-            value={newEventDescription}
-            onChangeText={setNewEventDescription}
-            multiline
-            numberOfLines={3}
-            style={{ marginBottom: 12 }}
-          />
-          <TextInput
-            label="Chapter"
-            value={newEventChapter}
-            onChangeText={setNewEventChapter}
-            keyboardType="numeric"
-            style={{ marginBottom: 12 }}
-          />
-          <Button
-            mode="contained"
-            onPress={() => {
-              onAddEvent({
-                id: generateId(),
-                title: newEventTitle,
-                description: newEventDescription,
-                chapter: parseInt(newEventChapter) || 1,
-                order: 0,
-              });
-              setIsModalVisible(false);
-              setNewEventTitle("");
-              setNewEventDescription("");
-              setNewEventChapter("");
-            }}
-            style={{ backgroundColor: "#6B4EFF" }}
-          >
-            Add Event
-          </Button>
-        </Modal>
-      </Portal>
+      <View style={styles.timeline}>{chapters.map(renderChapter)}</View>
+      {isEditable && <AddEventModal onAddEvent={onAddEvent} />}
     </View>
   );
 };
