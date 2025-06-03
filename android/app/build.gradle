@@ -86,7 +86,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.bookswritermanager"
+    namespace 'com.annakujawa.bookswritermanager'
     defaultConfig {
         applicationId 'com.annakujawa.bookswritermanager'
         minSdkVersion rootProject.ext.minSdkVersion

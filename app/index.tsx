@@ -115,7 +115,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Timeline</Text>
           <Card style={styles.section}>
-            <Card.Content>
+            <Card.Content style={{ backgroundColor: "rgb(247, 243, 249)" }}>
               {currentProject.timeline.length > 0 ? (
                 <NestableScrollContainer>
                   <Timeline
