@@ -17,6 +17,7 @@ export const AddEventModal = ({ onAddEvent }: IProps) => {
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventChapter, setNewEventChapter] = useState("");
+  const closeModal = () => setIsModalVisible(false);
 
   const handleAddEvent = useCallback(async () => {
     const newEvent = {
@@ -46,45 +47,47 @@ export const AddEventModal = ({ onAddEvent }: IProps) => {
       </Button>
 
       <Portal>
-        <Modal
-          visible={isModalVisible}
-          onDismiss={() => setIsModalVisible(false)}
-          contentContainerStyle={{
-            backgroundColor: "white",
-            padding: 20,
-            margin: 20,
-            borderRadius: 12,
-          }}
-        >
-          <TextInput
-            label="Title"
-            value={newEventTitle}
-            onChangeText={setNewEventTitle}
-            style={{ marginBottom: 12 }}
-          />
-          <TextInput
-            label="Description"
-            value={newEventDescription}
-            onChangeText={setNewEventDescription}
-            multiline
-            numberOfLines={3}
-            style={{ marginBottom: 12 }}
-          />
-          <TextInput
-            label="Chapter"
-            value={newEventChapter}
-            onChangeText={setNewEventChapter}
-            keyboardType="numeric"
-            style={{ marginBottom: 12 }}
-          />
-          <Button
-            mode="contained"
-            onPress={handleAddEvent}
-            style={{ backgroundColor: "#6B4EFF" }}
+        {isModalVisible && (
+          <Modal
+            visible
+            onDismiss={closeModal}
+            contentContainerStyle={{
+              backgroundColor: "white",
+              padding: 20,
+              margin: 20,
+              borderRadius: 12,
+            }}
           >
-            Add Event
-          </Button>
-        </Modal>
+            <TextInput
+              label="Title"
+              value={newEventTitle}
+              onChangeText={setNewEventTitle}
+              style={{ marginBottom: 12 }}
+            />
+            <TextInput
+              label="Description"
+              value={newEventDescription}
+              onChangeText={setNewEventDescription}
+              multiline
+              numberOfLines={3}
+              style={{ marginBottom: 12 }}
+            />
+            <TextInput
+              label="Chapter"
+              value={newEventChapter}
+              onChangeText={setNewEventChapter}
+              keyboardType="numeric"
+              style={{ marginBottom: 12 }}
+            />
+            <Button
+              mode="contained"
+              onPress={handleAddEvent}
+              style={{ backgroundColor: "#6B4EFF" }}
+            >
+              Add Event
+            </Button>
+          </Modal>
+        )}
       </Portal>
     </>
   );
